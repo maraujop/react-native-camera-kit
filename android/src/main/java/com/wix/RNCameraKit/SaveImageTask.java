@@ -226,7 +226,7 @@ public class SaveImageTask extends AsyncTask<byte[], Void, Void> {
                 imageFile.delete();
             }
             outputStream = new FileOutputStream(imageFile);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            image.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
             outputStream.close();
         } catch (IOException e) {
             Log.d(TAG, "Error accessing file: " + e.getMessage());
