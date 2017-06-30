@@ -208,6 +208,32 @@ public class CameraViewManager extends SimpleViewManager<CameraView> {
         return optimalSize;
     }
 
+    private static Camera.Size getBiggestPictureSize(List<Camera.Size> sizes) {
+        int maxWidth = 2200;
+        int maxHeight = 3200;
+        Camera.Size bestSize = null;
+
+        for (Camera.Size size : sizes) {
+            if (size.width > maxWidth || size.height > maxHeight) {
+                continue;
+            }
+
+            if (bestSize == null) {
+                bestSize = size;
+                continue;
+            }
+
+            int resultArea = bestSize.width * bestSize.height;
+            int newArea = size.width * size.height;
+
+            if (newArea > resultArea) {
+                bestSize = size;
+            }
+        }
+
+        return bestSize;
+    }
+
     private static void updateCameraSize() {
         try {
             Camera camera = CameraViewManager.getCamera();
@@ -220,7 +246,7 @@ public class CameraViewManager extends SimpleViewManager<CameraView> {
             List<Camera.Size> supportedPreviewSizes = camera.getParameters().getSupportedPreviewSizes();
             List<Camera.Size> supportedPictureSizes = camera.getParameters().getSupportedPictureSizes();
             Camera.Size optimalSize = getOptimalPreviewSize(supportedPreviewSizes, size.x, size.y);
-            Camera.Size optimalPictureSize = getOptimalPreviewSize(supportedPictureSizes, size.x, size.y);
+            Camera.Size optimalPictureSize = getBiggestPictureSize(supportedPictureSizes);
             Camera.Parameters parameters = camera.getParameters();
             parameters.setPreviewSize(optimalSize.width, optimalSize.height);
             parameters.setPictureSize(optimalPictureSize.width, optimalPictureSize.height);
